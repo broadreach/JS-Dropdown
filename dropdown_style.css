@@ -1,0 +1,258 @@
+* {
+	margin:0;
+	padding:0;
+}
+
+body {
+	font-family:Georgia, serif;
+	position:relative;
+	margin:4px 0 1% 0;
+}
+
+#column-wrapper {
+	width:100%;
+}
+
+/********************************************************************
+.navbar = first-tier horizontal static menu <ul>, 
+.dropdown = <li> from horizontal menu that displays drop-down menu when hovered over, 
+.flyout = <ul> for third-tier flyout menu.
+********************************************************************/
+
+.navbar, .dropdown ul {
+    list-style-type:none;
+	/*Eliminates indentation remaining without bullet points.*/
+	padding:0; 
+	/*Ensures menu items cover the whole space within div.*/
+	margin:0; 
+}
+
+.navbar > li {
+	/*Note: could also use display:inline, but then browser puts whitespace between each li. 
+	See .group:after above for clearfix that wraps these in a block element.*/
+	float:left;
+	width:16.6666%;
+}
+
+.navbar a, .dropclick {
+	text-decoration:none;
+	background-color:#BDD4DE;
+	color:#2B3A42;
+	font-size:16px;
+	font-weight:bold;
+	text-align:center;
+	padding:4%;
+	border-right: 3px solid #F0F8FE;
+	display:block;
+	/*So drop-down items aren't covered up by breadcrumb items below.*/
+	z-index:2;
+	position:relative;
+}
+
+.last-dropclick {
+    text-decoration:none;
+	background-color:#BDD4DE;
+	color:#2B3A42;
+	font-size:16px;
+	font-weight:bold;
+	text-align:center;
+	padding:4%;
+	display:block;
+	/*So drop-down items aren't covered up by breadcrumb items below.*/
+	z-index:2;
+	position:relative;
+}
+
+.navbar a:hover {
+	background-color:#3F5765;
+	color:#EFEFEF;
+}
+
+.dropclick:hover, .last-dropclick:hover {
+    cursor:pointer;
+}
+
+.dropdown, .flyout {
+	/*So that child drop-down <ul> can be positioned absolutely (i.e. relative to this).*/
+	position:relative;
+}
+
+.dropdown ul {
+	display:none;
+	background-color:#BDD4DE;
+	border-top: 3px solid #F0F8FE;
+	/*Position <ul> in relation to parent <li> element.*/
+	position:absolute;
+	top:100%;
+	left:0;
+	/*White-space:nowrap means whole drop-down menu is as wide as the widest <li>. 
+      Min-width:100% means it will be at least as wide as parent <li>.*/
+	white-space:nowrap;
+	min-width:99%;	
+}
+
+#last-dropdown {
+    right:0;
+}
+
+.dropclick:after, .last-dropclick:after {
+    content: '';
+    height: 0;
+    width: 0;
+    border: 0.25em solid transparent;
+    border-top-color: black;
+    display: inline-block;
+}
+
+.flyout ul {
+	left:100%;
+	top:0;
+	border-top:none;
+	border-left:3px solid white;
+}
+
+.dropdown ul a {
+	border:none;
+	display:block;
+	text-align:left;
+	font-weight:normal;
+    padding-left:15px;
+    padding-right:15px;
+}
+
+.flyout:hover  > ul {
+	display:block;
+}
+
+.flyout > a:after {
+    content: '';
+    height: 0;
+    width: 0;
+    border: 0.25em solid transparent;
+    border-left-color: black;
+    position: absolute;
+    top: 50%;
+    right:10%;
+    transform: translateY(-50%);
+}
+
+/********************************
+Breadcrumb styling and arrows
+********************************/
+
+#breadcrumb {
+	margin-left:0;
+	margin-top:0;
+} 
+
+#breadcrumb a {
+    text-decoration: none;	
+    float:left;
+    background:#BDD4DE;
+	color:#2B3A42;
+    display:block;
+    font-size:12px;
+    text-align:center;
+    padding: 1px 15px 0 25px;
+    position:relative;
+    margin:1px 2px 1px 0;
+}
+
+#breadcrumb ul li {
+    list-style-type:none;
+	float:left;
+    background:#BDD4DE;
+	color:#2B3A42;
+    display:block;
+    font-size:12px;
+    text-align:center;
+    padding: 1px 15px 2px 25px;
+    position:relative;
+    margin:1px 2px 1px 0;
+}
+
+#breadcrumb ul li:first-child {
+    padding:0;
+    margin:1px 2px 1px 0;
+}
+
+#breadcrumb ul li:last-child  {
+	background-color:#3F5765;
+	color:#EFEFEF;
+}
+
+#breadcrumb ul li:before {
+    content: "";
+    border-top: 9px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 9px solid #EFEFEF;
+    position: absolute; left: 0; top: 0;
+}
+
+#breadcrumb ul li:first-child:before {
+    display:none;
+}
+
+#breadcrumb ul li:after, #breadcrumb a:after {
+    content: "";  
+    border-top: 9px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 9px solid #BDD4DE;
+    position: absolute; right: -9px; top: 0;
+    z-index:1;
+}
+
+#breadcrumb ul li:last-child:after {
+    border-left: 9px solid #3F5765;
+}
+
+.clearfix {
+	display:block;
+	clear:both;
+}
+
+/*************************************************************************
+Shrinks or expands the navbar font size, breadcrumb font size, text width, 
+and thumbnail size as screen width changes.
+Note to self: media queries have to come AFTER the original styles in order 
+to override them.
+*************************************************************************/
+
+@media (max-width:850px) {
+    .navbar a, .dropclick, .last-dropclick {
+        font-size: 12px;
+    }
+    .navbar a {
+        min-width:none;	
+    }
+    .dropdown ul {
+        white-space: normal;
+    }
+    #breadcrumb ul li, #breadcrumb ul a {
+        font-size:10px;
+    }
+    #breadcrumb ul li:before {
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        border-left: 9px solid #EFEFEF;
+        position: absolute; left: 0; top: 0;
+    }
+    #breadcrumb ul li:after {  
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        border-left: 9px solid #BDD4DE;
+        position: absolute; right: -9px; top: 0;
+    }
+    #breadcrumb ul li:last-child:after {
+        border-left: 9px solid #3F5765;
+    }
+}
+
+@media (min-width:1200px) {
+    .navbar a, .dropclick, .last-dropclick {
+        font-size: 20px;
+    }
+    .dropdown ul a {
+        padding-left:17px;
+        padding-right:17px;
+    }
