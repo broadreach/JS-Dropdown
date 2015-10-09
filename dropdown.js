@@ -1,49 +1,39 @@
-//Note to self: the style property does not include the styles in an external CSS file, only
-//inline styles. So 'display' is initially set to 'none' in CSS, but don't test this until the 
-//script makes a change and the new style becomes an inline style.
-
 function dropDownMenus() {
     
-    var menuItems = document.getElementsByClassName('dropdown');
+    var menuItems = document.querySelectorAll('.dropdown');
+    
+    //Another way to do the following would be to make menuItems an array and use forEach, thus eliminating
+    //having to figure out how to pass the callback function a unique value for i in each iteration.
     
     for (var i = 0; i < menuItems.length; i++) {
-        
-        //Wrap 'click' function inside an IIFE in order to be able to pass each event listener a unique value for menuItems[i].
-        
-        menuItems[i].addEventListener('click', (function(currentItem) { 
-            
-            return function(e) { 
-                
-                for (var i = 0; i < menuItems.length; i++) {
-                    if (menuItems[i] == currentItem) {
-                        continue;
-                    }
-                    else {
-                        menuItems[i].children[1].style.display = 'none';
-                    }
-                };
-                
-                if (currentItem.children[1].style.display == 'block') {
-                    currentItem.children[1].style.display = 'none';
-                }
-                else {
-                    currentItem.children[1].style.display = 'block';
-                    e.stopPropagation(); //Without this, event will bubble up to the document event listener, 
-                                         //which will promptly hide it again and no one will ever see it.
-                }
-            };
-        })(menuItems[i]));
-        
-        //Hides each item if user clicks anywhere else on the page, including other menu items.
-        
-        document.addEventListener('click', (function(currentItem) { 
-            return function() {
-                    if (currentItem.children[1].style.display == 'block') {    
-                        currentItem.children[1].style.display = 'none';
-                    }
-            };
-        })(menuItems[i])); 
+        menuItems[i].addEventListener('click', showDropDown(menuItems[i]));
     }
+    
+    document.addEventListener('click', documentListener);
+        
+    //Returns a function so that a unique value for the counter can be passed from the loop above.
+    
+    function showDropDown(selectedMenu) {
+        return function(event) {
+            for (var i = 0; i < menuItems.length; i++) {
+                if (menuItems[i] == selectedMenu && menuItems[i].children[1].style.display == 'block') {
+                    menuItems[i].children[1].style.display = 'none';
+                } else if (menuItems[i] == selectedMenu) 
+                    menuItems[i].children[1].style.display = 'block';
+                else {
+                    menuItems[i].children[1].style.display = 'none';
+                }
+            }
+            event.stopPropagation(); //Otherwise document listener will fire and immediately hide the selected menu.
+        }
+    }
+    
+    function documentListener() {
+        for (var i = 0; i < menuItems.length; i++) {
+            menuItems[i].children[1].style.display = 'none';
+        }
+    }
+    
 }
 
 window.onload = dropDownMenus;
