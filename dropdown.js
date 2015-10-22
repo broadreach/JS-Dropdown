@@ -1,38 +1,78 @@
+function fadeIn(el) {
+  
+  el.style.opacity = 0;
+  el.style.display = 'block';
+    
+  var counter = 0;
+  var fadeInt = setInterval(function() {
+    if (counter < 1.05) {
+      el.style.opacity = counter;
+      counter += 0.05;
+    } else {
+    	clearInterval(fadeInt);
+    }
+  }, 8);
+  
+}
+  
+function fadeOut(el) {
+  
+  var counter = 1;
+  var fadeInt = setInterval(function() {
+    if (counter > 0) {
+      el.style.opacity = counter;
+      counter -= 0.05;
+    } else {
+    	clearInterval(fadeInt);
+    	el.style.display = "none";
+    }
+  }, 8);
+  
+}
+
+
+//Adds "open" and "close" event listeners to drop-down menus and "close" listener to document.body
+
 function dropDownMenus() {
     
-    var menuItems = document.querySelectorAll('.dropdown');
+  var menuItems = document.querySelectorAll('.dropdown');
+  
+  for (var i = 0; i < menuItems.length; i++) {
+      menuItems[i].addEventListener('click', showDropDown(menuItems[i]));
+  }
+  
+  document.addEventListener('click', documentListener);
+      
+  function showDropDown(selectedMenu) {
     
-    //Another way to do the following would be to make menuItems an array and use forEach, thus eliminating
-    //having to figure out how to pass the callback function a unique value for i in each iteration.
-    
-    for (var i = 0; i < menuItems.length; i++) {
-        menuItems[i].addEventListener('click', showDropDown(menuItems[i]));
-    }
-    
-    document.addEventListener('click', documentListener);
+      return function(event) {
         
-    //Returns a function so that a unique value for the counter can be passed from the loop above.
+          for (var i = 0; i < menuItems.length; i++) {
+            
+              var dropDownMenu = menuItems[i].children[1];
+              
+              if (menuItems[i] == selectedMenu && dropDownMenu.style.display == 'block') {
+                  fadeOut(dropDownMenu);
+              } else if (menuItems[i] == selectedMenu) {
+                  fadeIn(dropDownMenu);
+              } else {
+                  fadeOut(dropDownMenu);
+              }
+              
+          }
+          
+          event.stopPropagation();
+          
+      };
+  }
     
-    function showDropDown(selectedMenu) {
-        return function(event) {
-            for (var i = 0; i < menuItems.length; i++) {
-                if (menuItems[i] == selectedMenu && menuItems[i].children[1].style.display == 'block') {
-                    menuItems[i].children[1].style.display = 'none';
-                } else if (menuItems[i] == selectedMenu) 
-                    menuItems[i].children[1].style.display = 'block';
-                else {
-                    menuItems[i].children[1].style.display = 'none';
-                }
-            }
-            event.stopPropagation(); //Otherwise document listener will fire and immediately hide the selected menu.
-        }
-    }
+  function documentListener() {
     
-    function documentListener() {
-        for (var i = 0; i < menuItems.length; i++) {
-            menuItems[i].children[1].style.display = 'none';
-        }
-    }
+      for (var i = 0; i < menuItems.length; i++) {
+          fadeOut(menuItems[i].children[1]);
+      }
+      
+  }
     
 }
 
